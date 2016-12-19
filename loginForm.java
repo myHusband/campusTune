@@ -92,6 +92,7 @@ public class loginForm extends JFrame implements ActionListener {
     				if(userNameText.getText().equals(db.userText) && Password.equals(db.Password) && 
     						userNameText.getText().equals("admin")  &&  Password.equals("admin")){
 	    				AdminPanel ad = new AdminPanel();
+					ad.show();
 	    				//ad.setVisible(true);
 	    				
 	    			}
