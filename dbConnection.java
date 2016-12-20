@@ -24,7 +24,6 @@ public class dbConnection {
 	public void inserDataToMysql(String fullnameT,String adressT,String city,long telNumber,String emailT,String userText,
 										String Password,int accNumber,int cardNumber,int serialNumber,int expireNumber,int secureNumber)
 												throws SQLException, ClassNotFoundException{
-try {
 			
     		Class.forName("com.mysql.jdbc.Driver");
 conn = DriverManager.getConnection("jdbc:mysql://localhost/campusTune","root", "");
@@ -54,13 +53,10 @@ String sql = "INSERT INTO eusers (name_surname, address, city, telephone, email,
    stmt.close();
 conn.close();
 	
-} catch (Exception e1) {
-	// TODO Auto-generated catch block
-System.out.print("Error " + e1);
-	}
+}
 		
 		
-	}
+	
 	   
     public void getDataFromMysql() throws SQLException, ClassNotFoundException{
     	
