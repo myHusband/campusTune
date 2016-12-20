@@ -189,17 +189,8 @@ public class registrationForm extends JFrame implements ActionListener {
 					  expiredDateText.getText(),securityCodeText.getText());
 			  aux.cityToString(cities.getSelectedIndex());
 			  
-			  
-			/* // dbConnection db = new dbConnection();
-			  db.createConnection();
-			  try {
-				db.insertDataToMysql();
-			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}*/
-			
-			  
+			  new login();
+			  	  
 		}
 		
 		
