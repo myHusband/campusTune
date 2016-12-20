@@ -65,7 +65,7 @@ public class registrationForm extends JFrame implements ActionListener {
 		// TODO Auto-generated constructor stub
 		setTitle("Registration Form");
 		setLayout(null);
-		setSize(600,450);
+		setSize(500,450);
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
