@@ -16,6 +16,12 @@ public class login extends JFrame implements ActionListener {
 	JPasswordField passwdText = new JPasswordField();
 	
 	JButton submitButton = new JButton("Login");
+	JPanel headerPanel = new JPanel();
+	JLabel headerLabel = new JLabel("");
+	
+	
+	
+	ImageIcon icon = new ImageIcon("images\\login\\login3.jpg");
 		
 	public login() {
 		// TODO Auto-generated constructor stub
@@ -26,22 +32,22 @@ public class login extends JFrame implements ActionListener {
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
-	     
-	 	 userName.setBounds(75, 100, 80,15);
-	 	 userNameText.setBounds(150, 100, 150, 20);
+	   headerLabel.setBounds(10,50, 150, 98);
+	   add(headerLabel);
+	   headerLabel.setIcon(icon);
+	 	 userName.setBounds(160, 50, 70,15);
+	 	 userNameText.setBounds(230, 50, 150, 20);
 	     add(userNameText);
 	 	 add(userName);
-	 	 
-	     passwd.setBounds(75, 130, 80,15);
-	     passwdText.setBounds(150, 130, 150, 20); 
+	     passwd.setBounds(160, 68, 80,15);
+	     passwdText.setBounds(230, 68, 150, 20); 
 	     add(passwdText);
 	     add(passwd);
-	  
-	 	submitButton.setBounds(150, 160, 80,30);
+	 	submitButton.setBounds(230, 90, 80,30);
 	 	add(submitButton);
 	 	submitButton.addActionListener(this);
-	 	this.getContentPane().setBackground(Color.gray);
-		
+		//this.getContentPane().setBackground(Color.gray);
+	 	
 		setVisible(true);
 	}
 
@@ -56,38 +62,37 @@ public class login extends JFrame implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		
-		
+	
 		if(e.getSource() ==   submitButton){
-			
 			dbConnection db = new dbConnection();
-			
+			String Password = String.copyValueOf(passwdText.getPassword());
 			try{
-				db.getDataFromMysql();
-				String Password = String.copyValueOf(passwdText.getPassword());
-				
-				if((db.userVector.contains(userNameText.getText())) && (db.passwordVector.contains(Password)) && 
+				db.getDataFromMysql(userNameText.getText(),Password);
+				if((db.userArrayList.contains(userNameText.getText())) && (db.passwordArrayList.contains(Password)) && 
 						userNameText.getText().equals("admin")  &&  Password.equals("admin")){
 					dispose();
-					new AdminPaneL();
-					
+					new AdminPanel();	
     			}
-				
-				else if((db.userVector.contains(userNameText.getText())) && (db.passwordVector.contains(Password))	)
+				else if((db.userArrayList.contains(userNameText.getText())) && (db.passwordArrayList.contains(Password))	)
 				{
 					dispose();
-					new ProductForm(); }
-				
-				else if((db.userVector.contains(userNameText.getText())) && !(db.passwordVector.contains(Password)) ){
+					//new ProductForm();
+					}
+				else if((db.userArrayList.contains(userNameText.getText())) && !(db.passwordArrayList.contains(Password)) ){
 					JOptionPane.showMessageDialog(null, " Invalid Password   " ,"ERROR_ON_PASSWORD",JOptionPane.ERROR_MESSAGE);
 				}
-				else {JOptionPane.showMessageDialog(null, "Invalid username  ","ERROR_ON_USERNAME",JOptionPane.ERROR_MESSAGE);}
-				
-				
-			}catch(Exception ee){System.out.println(ee.toString());}
+				else 
+				{JOptionPane.showMessageDialog(null, "Invalid username  ","ERROR_ON_USERNAME",JOptionPane.ERROR_MESSAGE);}	
+			}catch(Exception ee)
+			{System.out.println(ee.toString());}
 			
 		}
 		
 		
 	}
+
+	
+
+
 
 }

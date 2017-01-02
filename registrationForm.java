@@ -20,15 +20,14 @@ public class registrationForm extends JFrame implements ActionListener {
 	JLabel passwd = new JLabel("Password :");
 	JLabel re_passwd= new JLabel("Re-enter Password :");
 	JLabel passLabel = new JLabel("");
-	JLabel accountNumber = new JLabel("Account number :");
-	JLabel cardNumber= new JLabel("Card number :");
-	JLabel serialNumber = new JLabel("serial number :");
-	JLabel expiredDate = new JLabel("Expire date :");
-	JLabel securityCode = new JLabel("CVS :");
-	JLabel CVSnumber = new JLabel("");
+	JLabel accountNumber = new JLabel(" Card number:");
 	
 	
-    JLabel nameWarning = new JLabel("");
+	JLabel securityCode = new JLabel("CVC :");
+	
+	
+	
+   
     JLabel telWarning = new JLabel("");
 		
 	JTextField fullNameText = new JTextField();
@@ -38,16 +37,20 @@ public class registrationForm extends JFrame implements ActionListener {
 	JTextField userNameText = new JTextField();
 	JPasswordField passwdText = new JPasswordField();
 	JPasswordField repassText = new JPasswordField();
-	JTextField accountNumberText = new JTextField(4);
-	JTextField cardNumberText= new JTextField(4);
-	JTextField serialNumberText = new JTextField(4);
-	JTextField  expiredDateText = new JTextField (4);
-	JTextField  securityCodeText = new JTextField(3);
+	JTextField cardPart1 = new JTextField("####");
+	JTextField  cardPart2= new JTextField("####");
+	JTextField  cardPart3 = new JTextField("####");
+	JTextField   cardPart4 = new JTextField ("####");
+	JTextField  securityCodeText = new JTextField("###");
 	
 	
 	JButton submitButton = new JButton("submit");
 	JButton clearButton = new JButton("clear");
 	
+	JLabel carddetailLabel= new JLabel("");
+	JLabel cardImage = new JLabel("");
+	
+	JLabel cvsLabel = new JLabel("");
 	
 	JPanel cardPanel = new JPanel(null);
 	JPanel userPanel = new JPanel();
@@ -59,13 +62,13 @@ public class registrationForm extends JFrame implements ActionListener {
 	JComboBox cities = new JComboBox();
 	String cityText;
 	
-	
-	
+	ImageIcon icon2 = new ImageIcon("images\\login\\acceptance_marks_offline_trays_clear_UK_198x50mm.jpg");
+	ImageIcon icon = new ImageIcon("images\\login\\cvc_visa.gif");
 	public registrationForm() {
 		// TODO Auto-generated constructor stub
 		setTitle("Registration Form");
 		setLayout(null);
-		setSize(500,450);
+		setSize(450,400);
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
@@ -77,8 +80,7 @@ public class registrationForm extends JFrame implements ActionListener {
 	    fullNameText.setBounds(200, 48, 150, 20);
 	    add(fullNameText);
 	    
-	    nameWarning.setBounds(355, 50, 180, 15);
-	     add(nameWarning);
+	   
 	   
 	     address.setBounds(130, 73,80, 15);
 	     add(address);
@@ -130,39 +132,47 @@ public class registrationForm extends JFrame implements ActionListener {
 	     add(repassText);
 	 	 add(re_passwd);
 	 	 
-	accountNumber.setBounds(76, 237, 150, 15);
+		 cardImage.setBounds(200, 231, 150, 25);
+	 	 add(cardImage);
+	 	 cardImage.setIcon(icon2);
+	 	 
+	 	 accountNumber.setBounds(100, 257, 150, 15);
 	 	 add(accountNumber);
-	 	accountNumberText.setBounds(200, 237, 64, 20);
-	 	 add(accountNumberText);
+	 	 cardPart1 .setBounds(200, 257, 38, 20);
+	 	 add( cardPart1 );
+	 	 cardPart1 .setColumns(4);
+	 	
+	 	 cardPart2 .setBounds(239, 257, 38, 20);
+	 	 add(cardPart2);
+	 	cardPart2.setColumns(4);
 	 	 
-	 	 cardNumber.setBounds(97, 255, 150, 15);
-	 	 add(cardNumber);
-	 	cardNumberText.setBounds(200, 255, 64, 20);
-	 	 add(cardNumberText);
 	 	 
-	 	 serialNumber.setBounds(90, 277, 150, 15);
-	 	 add(serialNumber);
-	 	serialNumberText.setBounds(200, 277, 64, 20);
-	 	 add(serialNumberText);
+	 	cardPart3.setBounds(278, 257, 38, 20);
+	 	 add(cardPart3);
+	 	cardPart3.setColumns(4);
 	 	 
-	 	 expiredDate.setBounds(105, 298, 150, 15);
-	 	 add( expiredDate);
-	 	 expiredDateText.setBounds(200, 298, 64, 20);
-	 	 add( expiredDateText);
+	 	
+	 	cardPart4.setBounds(317, 257, 38, 20);
+	 	 add( cardPart4);
 	 	 
-	 	 securityCode.setBounds(146, 319, 150, 15);
+	 	 securityCode.setBounds(150, 282, 150, 15);
 	 	 add(securityCode);
-	 	securityCodeText.setBounds(200, 319, 48, 20);
+	 	securityCodeText.setBounds(200, 282, 32, 20);
 	 	 add(securityCodeText);
 	 	 
-	 	submitButton.setBounds(200, 350, 80, 20);
+	 	 cvsLabel.setBounds(235, 277, 150, 30);
+	 	 add(cvsLabel);
+	 	 cvsLabel.setIcon(icon);
+	 	 
+	 	 
+	 	submitButton.setBounds(200, 320, 80, 20);
 	 	add(submitButton);
 	 	submitButton.addActionListener(this);
 	 	
-	 	clearButton.setBounds(285, 350, 70, 20);
+	 	clearButton.setBounds(285, 320, 70, 20);
 	 	add(clearButton);
 	 	clearButton.addActionListener(this);
-	 	this.getContentPane().setBackground(Color.gray);
+	 	//this.getContentPane().setBackground(Color.gray);
 		
 		setVisible(true);
 	}
@@ -183,13 +193,12 @@ public class registrationForm extends JFrame implements ActionListener {
 		if(e.getSource() ==   submitButton){
 			  auxillaryClass aux = new auxillaryClass();
 			  
-			  aux.submitMethod(fullNameText.getText(),addressText.getText(),cities.getSelectedIndex(),telephoneText.getText(),
+			  aux.validateRegistrationForm(fullNameText.getText(),addressText.getText(),cities.getSelectedIndex(),telephoneText.getText(),
 					  emailText.getText(),userNameText.getText(),passwdText.getPassword(),repassText.getPassword(),
-					  accountNumberText.getText(),cardNumberText.getText(),serialNumberText.getText(),
-					  expiredDateText.getText(),securityCodeText.getText());
+					  cardPart1.getText(),cardPart2.getText(),cardPart3.getText(),
+					  cardPart4.getText(),securityCodeText.getText());
 			  aux.cityToString(cities.getSelectedIndex());
-			  
-			  new login();
+			 // dispose();
 			  	  
 		}
 		
