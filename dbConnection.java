@@ -20,6 +20,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.awt.image.WritableRaster;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -44,7 +45,7 @@ public void inserDataToMysql(String fullnameT,String adressT,String city,long te
 			
     		Class.forName("com.mysql.jdbc.Driver");
 			conn = DriverManager.getConnection("jdbc:mysql://localhost/campusTune","root", "");
-			System.out.print("Database is connected !\n\n");
+			//System.out.print("Database is connected !\n\n");
 			stmt = conn.createStatement();
 			String sql = "INSERT INTO eusers (name_surname, address, city, telephone, email, username,"
 					+ " password, card_no, security_code)values(?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -61,7 +62,7 @@ public void inserDataToMysql(String fullnameT,String adressT,String city,long te
 		    int n1 = prepStmt.executeUpdate();
 		    if(n1>0)
 			   {
-			   	System.out.print("Inserted Successfully!\n\n");
+			   	//System.out.print("Inserted Successfully!\n\n");
 			   }
 			   stmt.close();
 			conn.close();					
@@ -70,7 +71,7 @@ public void inserDataToMysql(String fullnameT,String adressT,String city,long te
     public void getDataFromMysql(String name, String passwd) throws SQLException, ClassNotFoundException{
 				Class.forName("com.mysql.jdbc.Driver");
 	    		conn = DriverManager.getConnection("jdbc:mysql://localhost/campusTune","root", "");
-	    		System.out.print("Database is connected !\n\n");
+	    		//System.out.print("Database is connected !\n\n");
 	    		stmt = conn.createStatement();
 	    		String sql = "SELECT username,password FROM eusers where username = ?";
 	    		PreparedStatement prepStmt =  (PreparedStatement) conn.prepareStatement(sql);
@@ -85,25 +86,73 @@ public void inserDataToMysql(String fullnameT,String adressT,String city,long te
     }
     
     
-    public   ArrayList<Product>  getDataFromProductDB() throws SQLException, ClassNotFoundException{    	
-        ArrayList<Product> sqlResultList = new ArrayList<Product>();
+    public   DefaultTableModel  getDataFromProductDB() throws SQLException, ClassNotFoundException, IOException{    	
+    	JTable table = new JTable();
+    	DefaultTableModel dtm = new DefaultTableModel(0, 0);
+    	String header[] = new String[] { "pid","name", "picture", "quantity left", "category","price", "description" };
+    	dtm.setColumnIdentifiers(header);
+    	table.setModel(dtm);
     	Class.forName("com.mysql.jdbc.Driver");
 		conn = DriverManager.getConnection("jdbc:mysql://localhost/campusTune","root", "");
-		System.out.print("Database is connected !\n\n");
+		//System.out.print("Database is connected !\n\n");
 		stmt = conn.createStatement();
-		String sql = "SELECT pname,picture,quantity_left,pcategory,price,description FROM product ";
+		String sql = "SELECT pid,pname,quantity_left,pcategory,price,description FROM product ";
 		ResultSet result = stmt.executeQuery(sql);
-		Product p;
 		while(result.next()){
-		p = new Product( result.getString(1), result.getBytes(2),result.getInt(3),
-				result.getString(4),result.getInt(5), result.getString(6));
-		sqlResultList.add(p);
-		}
+		String filepath = "images\\products\\"+result.getInt(1)+".jpg";
+		File imgPath = new File(filepath);
+		BufferedImage bufferedImage;
+		try {
+		bufferedImage = ImageIO.read(imgPath);
+		ImageIcon icon = new ImageIcon(bufferedImage);
+		dtm.addRow(new Object[] { result.getInt(1),result.getString(2),icon,result.getInt(3), result.getString(4),
+		result.getInt(5),result.getString(6) });	
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	 
+		 }
 		 stmt.close();
 		 conn.close();
-		 return sqlResultList;
-			
-
+		 return dtm;
+    }
+    
+    public void insertDataintoProductDB(String pname,String filename,int quantity,
+    		String pcategory,double price,String Description ) throws Exception{
+    	
+    	Class.forName("com.mysql.jdbc.Driver");
+		conn = DriverManager.getConnection("jdbc:mysql://localhost/campusTune","root", "");
+		//System.out.print("Database is connected !\n\n");
+		stmt = conn.createStatement();
+		String sql = "INSERT INTO product (pname, picture, quantity_left, pcategory, price, description)values(?, ?, ?, ?, ?, ?)";
+		   PreparedStatement prepStmt =  (PreparedStatement) conn.prepareStatement(sql);
+	    prepStmt.setString(1, pname);
+	    File file = new File(filename);
+	    FileInputStream  fis = new FileInputStream(file);
+	    prepStmt.setBinaryStream(2, fis, (int) file.length());
+	    prepStmt.setInt(3, quantity);
+	    prepStmt.setString(4, pcategory);
+	    prepStmt.setDouble(5, price);
+	    prepStmt.setString(6, Description);
+	    int n1 = prepStmt.executeUpdate();
+	    if(n1>0)
+		   {
+		   	System.out.print("Inserted Successfully!\n\n");
+		   }
+		   stmt.close();
+		conn.close();
+  
+    }
+    
+    public void deleteProductDB(int pid) throws Exception{
+    	
+    	Class.forName("com.mysql.jdbc.Driver");
+		conn = DriverManager.getConnection("jdbc:mysql://localhost/campusTune","root", "");
+		//System.out.print("Database is connected !\n\n");
+		stmt = conn.createStatement();
+		String sql = "DELETE FROM product where pid = '"+pid+"'";
+		stmt.executeUpdate(sql);
+		
     }
     
 }
