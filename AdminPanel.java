@@ -7,6 +7,7 @@ import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.*;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Vector;
@@ -42,14 +43,14 @@ public class AdminPanel  extends JFrame implements ActionListener{
 		pack();
 		setTitle("Admin ");
 		setLayout(null);
-		setSize(900,460);
+		setSize(900,485);
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
 	    headerPanel.setBounds(0, 0, 900, 110);
         add(headerPanel);
         headerPanel.setLayout(null);
-        headerPanel.setBackground(Color.white);
+        headerPanel.setBackground(Color.gray);
         headerLabel.setBounds(740, 0, 160, 130);
         headerPanel.add(headerLabel);
         headerLabel.setIcon(icon);
@@ -91,12 +92,9 @@ public class AdminPanel  extends JFrame implements ActionListener{
        js.setBounds(0, 150, 738, 300);
        //productTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
        js.setPreferredSize(new Dimension (738,450));
-       productTable.setBackground(Color.pink);
+       productTable.setBackground(Color.white);
        add(js);
-     
- 	 // this.getContentPane().setBackground(Color.WHITE);
-		setVisible(true);
-		
+	   setVisible(true);	
 	}
 	
 	@Override
@@ -106,39 +104,21 @@ public class AdminPanel  extends JFrame implements ActionListener{
 		if(arg0.getSource() == viewProduct){
 			dbConnection db = new dbConnection();
 			try {
-				ArrayList<Product> productList = db.getDataFromProductDB();
-				
-				String [] columnName ={"name","quantity left","category","price","description","picture" };
-				Object[][] rows = new Object[productList.size()][6];
-				for(int i=0; i< productList.size();i++){
-					rows[i][0] = productList.get(i).getProductName();
-					rows[i][1] = productList.get(i).getQuantity();
-					rows[i][2] = productList.get(i).getCategory();
-					rows[i][3] = productList.get(i).getPrice();
-					rows[i][4] = productList.get(i).getDescription();
-	                if(productList.get(i).getMyImage()!= null){
-	                    ImageIcon image = new ImageIcon(new ImageIcon(productList.get(i).getMyImage()).getImage()
-	                            .getScaledInstance(140, 150, Image.SCALE_SMOOTH) );  
-	                        rows[i][5] = image;
-	                }
-	                else{
-	                    rows[i][5] = null;
-	                }
-				}
-				Model dataModel = new Model(rows,columnName);
-				productTable.setModel(dataModel);
-				productTable.setRowHeight(120);
-				productTable.getColumnModel().getColumn(5).setPreferredWidth(150);
-				
-				
-			} catch (ClassNotFoundException | SQLException e) {
+				productTable.setModel(db.getDataFromProductDB());
+				productTable.getColumnModel().getColumn(1).setCellRenderer(productTable.getDefaultRenderer(ImageIcon.class));
+				productTable.getColumnModel().getColumn(1).setPreferredWidth(70);
+				productTable.setRowHeight(80);
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
-		
-			
-			
+								
 		}
 		
       if(arg0.getSource() == addProduct){
