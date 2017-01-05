@@ -1,0 +1,98 @@
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.border.EmptyBorder;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+
+public class Books extends JFrame {
+	JTable productTable = new JTable();
+	JButton btnAddToCart = new JButton("Add to Cart");
+	JButton goBackButton = new JButton("Go back");
+
+	private JPanel contentPane;
+
+	
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+		public void run() {
+			try {
+			Books frame = new Books();
+			frame.setVisible(true);
+			} catch (Exception e) {
+		e.printStackTrace();
+				}
+			}
+		});
+	}
+
+
+
+	public Books() {
+		setTitle("Select your books here and add to your Cart. Enjoy!");
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 712, 484);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		
+		
+		
+		
+		JPanel panel = new JPanel();
+		panel.setBounds(0, 0, 696, 363);
+		JScrollPane js = new JScrollPane(productTable);
+	       js.setBounds(0, 150, 468, 300);
+	       js.setPreferredSize(new Dimension (468,80));
+	       js.setBackground(Color.pink);
+	       panel.add(js);
+	       contentPane.add(panel);
+		
+		JPanel panel_1 = new JPanel();
+		panel_1.setBounds(0, 362, 696, 83);
+		contentPane.add(panel_1);
+		panel_1.setLayout(null);
+		
+		JButton goBackButton = new JButton("Go back");
+		goBackButton.addActionListener(new ActionListener() {
+	public void actionPerformed(ActionEvent e) {
+				if(e.getSource()==goBackButton){
+				productInterface frame1 = new productInterface();
+				frame1.setVisible(true);
+			}
+		}
+		});
+		goBackButton.setBounds(103, 25, 160, 47);
+		panel_1.add(goBackButton);
+		
+		JButton btnAddToCart = new JButton("Add to Cart");
+		btnAddToCart.setBounds(456, 25, 160, 47);
+		btnAddToCart.addActionListener(new ActionListener() {
+	public void actionPerformed(ActionEvent e) {
+		if(e.getSource()==btnAddToCart){
+		//Cart frame = new Cart();
+		//frame.setVisible(true);
+		}
+		}
+		});
+		panel_1.add(btnAddToCart);}
+		public void actionPerformed(ActionEvent e){
+			if(e.getSource()==btnAddToCart){
+				//Cart frame = new Cart();
+				//frame.setVisible(true);
+			}
+			if(e.getSource()==goBackButton){
+				productInterface frame1 = new productInterface();
+				frame1.setVisible(true);
+			}
+		}
+}
