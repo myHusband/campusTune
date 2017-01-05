@@ -154,5 +154,8 @@ public void inserDataToMysql(String fullnameT,String adressT,String city,long te
 		stmt.executeUpdate(sql);
 		
     }
+    void updateProductDB(int pid,String updateValue){
+    	
+    }
     
 }

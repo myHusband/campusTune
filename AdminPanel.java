@@ -7,12 +7,14 @@ import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.*;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Vector;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
@@ -34,8 +36,6 @@ public class AdminPanel  extends JFrame implements ActionListener{
 	JLabel headerTableLabel = new JLabel("");
 	JLabel contentLabel = new JLabel("");
 	JTable productTable = new JTable();
-	Vector columnNamesVector = new Vector();
-    Vector dataVector = new Vector();
 	
 	
 	public AdminPanel() {
@@ -81,44 +81,44 @@ public class AdminPanel  extends JFrame implements ActionListener{
         headerTableLabel.setBounds(300, 115, 400, 30);
         add(headerTableLabel);
         headerTableLabel.setText("View Your Product here");
-        headerTableLabel.setForeground(Color.blue);
-	       
-       contentLabel.setBounds(740, 115, 200, 30);
-       add(contentLabel);
-       contentLabel.setText("Manage Content");
-       contentLabel.setForeground(Color.blue);
- 
-       JScrollPane js = new JScrollPane(productTable);
-       js.setBounds(0, 150, 738, 300);
-       //productTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-       js.setPreferredSize(new Dimension (738,450));
-       productTable.setBackground(Color.white);
-       add(js);
-	   setVisible(true);	
+        headerTableLabel.setForeground(Color.blue);    
+        contentLabel.setBounds(740, 115, 200, 30);
+        add(contentLabel);
+        contentLabel.setText("Manage Content");
+        contentLabel.setForeground(Color.blue);
+        JScrollPane js = new JScrollPane(productTable);
+        js.setBounds(2, 150, 737, 300);
+        //productTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        js.setPreferredSize(new Dimension (738,450));
+        productTable.setBackground(Color.white);
+        add(js);
+	    setVisible(true);	
 	}
-	
+	void makeTable(){
+		dbConnection db = new dbConnection();
+		try {
+			productTable.setModel(db.getDataFromProductDB());
+			productTable.getColumnModel().getColumn(2).setCellRenderer(productTable.getDefaultRenderer(ImageIcon.class));
+			productTable.getColumnModel().getColumn(2).setPreferredWidth(70);
+			productTable.setRowHeight(80);
+			productTable.setRowSelectionAllowed(true);
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		// TODO Auto-generated method stub
 		
 		if(arg0.getSource() == viewProduct){
-			dbConnection db = new dbConnection();
-			try {
-				productTable.setModel(db.getDataFromProductDB());
-				productTable.getColumnModel().getColumn(1).setCellRenderer(productTable.getDefaultRenderer(ImageIcon.class));
-				productTable.getColumnModel().getColumn(1).setPreferredWidth(70);
-				productTable.setRowHeight(80);
-			} catch (ClassNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-								
+			makeTable();				
 		}
 		
       if(arg0.getSource() == addProduct){
@@ -128,15 +128,59 @@ public class AdminPanel  extends JFrame implements ActionListener{
 		}
       
       if(arg0.getSource() == deleteProduct){
-    	  dispose();
-    	  new deleteProduct();
-			
-		}
-      if(arg0.getSource() == updateProduct){
-    	  dispose();
-    	  new updateProduct();
+    		dbConnection dbConn = new dbConnection();
+    		String pidTextField = JOptionPane.showInputDialog("Enter the product id to be deleted :");
+			try {
+				dbConn.deleteProductDB(Integer.parseInt(pidTextField));
+				JOptionPane.showMessageDialog(null, "  delete was successfully ");
+				makeTable();
+				AdminPanel admin = new AdminPanel();
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}	
 		}
       
+      if(arg0.getSource() == updateProduct){
+    	  //dispose();
+    	  //new updateProduct();
+    	  productTable.addMouseListener(new MouseAdapter() {
+    		    @Override
+    		    public void mouseClicked(final MouseEvent e) {
+    		        if (e.getClickCount() == 1) {
+    		            final JTable target = (JTable)e.getSource();
+    		            final int row = target.getSelectedRow();
+    		            final int column = target.getSelectedColumn();
+    		            String colName = productTable.getModel().getColumnName(column);
+    		            if(colName.equals("Picture")){
+    		            	   JFileChooser fc = new JFileChooser();
+    						   fc.setAcceptAllFileFilterUsed(false);
+    						   fc.addChoosableFileFilter(new FileNameExtensionFilter("*.jpg", "jpg") );
+    						   int isFileChooserActivated = fc.showOpenDialog(AdminPanel.this);
+    						   if (isFileChooserActivated == JFileChooser.APPROVE_OPTION)
+    						   {
+    						   File file = fc.getSelectedFile();
+    						   JOptionPane.showMessageDialog(null, file.getName() + " is opened! ");
+    						   String filePath = file.getAbsolutePath();
+    						   //this.pictureTextField.setText(filePath);
+    					   }  
+    		            }
+    		            else{
+    		            	String updateValue = JOptionPane.showInputDialog("Enter new value");
+    		            	dbConnection dbconn = new dbConnection();
+    		            	int pID = Integer.parseInt((String) productTable.getModel().getValueAt(0, column));
+    		            	dbconn.updateProductDB(pID, updateValue);
+    		            	makeTable();
+    		            }
+    		            
+    		            // Cast to ur Object type
+    		            //final String valueInCell = (String)productTable.getValueAt(row, column);
+    		            // TODO WHAT U WANT!
+    		        }
+    		    }
+    		});
+		}
+     
 		
 	}
 
